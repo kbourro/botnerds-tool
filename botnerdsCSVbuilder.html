@@ -22,9 +22,9 @@
     document.getElementById('generate').onclick = function () {
         let input = document.getElementById('input').value.split(/\r?\n/);
         let results = [];
+        let test = 0;
         for (let index = 0; index < input.length; index++) {
             const element = input[index];
-            let test = 0;
             if (element.includes('Test')) {
                 test = (element.match(/Test (\d+)/)[1]) - 1;
             }
@@ -39,12 +39,12 @@
             }
         }
         console.log(results);
-        let finalResults;
+        let finalResults = '';
         for (let index = 0; index < results.length; index++) {
             const element = results[index];
             finalResults = finalResults + element.join(',') + '\r\n';
         }
-        document.getElementById('result').value = finalResults;
+        document.getElementById('result').value = finalResults.trim();
         document.getElementById('count').innerText = results.length;
     }
     document.getElementById('generateCommands').onclick = function () {
