@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BotNerds CSV Builder</title>
+</head>
+
+<body>
+    <div><textarea id='input'></textarea></div>
+    <div><button id='generate'>Generate</button></div>
+    <div><textarea id='result'></textarea></div>
+    <div><label id='count'>0</label></div><br>
+    <div><label>Commands</label></div>
+    <div><textarea id='inputCommands'></textarea></div>
+    <div><button id='generateCommands'>Generate</button></div>
+    <div><textarea id='resultCommands'></textarea></div>
+</body>
+<script>
+    document.getElementById('generate').onclick = function () {
+        let input = document.getElementById('input').value.split(/\r?\n/);
+        let results = [];
+        for (let index = 0; index < input.length; index++) {
+            const element = input[index];
+            let test = 0;
+            if (element.includes('Test')) {
+                test = (element.match(/Test (\d+)/)[1]) - 1;
+            }
+            if (!Array.isArray(results[test])) {
+                results[test] = [];
+            }
+            if (element == 'Daily ROI (Closed)') {
+                results[test].push(input[index + 1].replace('%', ''));
+            }
+            if (element == 'Max Deal Time') {
+                results[test].push(input[index + 1].replace(/ days.*/, ''));
+            }
+        }
+        console.log(results);
+        let finalResults;
+        for (let index = 0; index < results.length; index++) {
+            const element = results[index];
+            finalResults = finalResults + element.join(',') + '\r\n';
+        }
+        document.getElementById('result').value = finalResults;
+        document.getElementById('count').innerText = results.length;
+    }
+    document.getElementById('generateCommands').onclick = function () {
+        let input = document.getElementById('inputCommands').value.split(/\r?\n/);
+        let pairCombined = [];
+        let tpCombined = [];
+        let boCombined = [];
+        let soCombined = [];
+        let mstcCombined = [];
+        let sosCombined = [];
+        let osCombined = [];
+        let ssCombined = [];
+        let sdCombined = [];
+        let edCombined = [];
+        for (let index = 0; index < input.length; index++) {
+            const element = input[index];
+            pairCombined = pairCombined.concat(element.match(/-pair ([\w\,/ ]+)/)[1].trim().replace(' ', ',').split(','));
+            tpCombined.push(element.match(/-tp ([\d\.]+)/)[1]);
+            boCombined.push(element.match(/-bo ([\d\.]+)/)[1]);
+            soCombined.push(element.match(/-so ([\d\.]+)/)[1]);
+            mstcCombined.push(element.match(/-mstc ([\d\.]+)/)[1]);
+            sosCombined.push(element.match(/-sos ([\d\.]+)/)[1]);
+            osCombined.push(element.match(/-os ([\d\.]+)/)[1]);
+            ssCombined.push(element.match(/-ss ([\d\.]+)/)[1]);
+            sdCombined.push(element.match(/-sd ([\d\/]+)/)[1]);
+            edCombined.push(element.match(/-ed ([\d\/]+)/)[1]);
+        }
+        let pairs = [...new Set(pairCombined)];
+        document.getElementById('resultCommands').value = '!dcabacktest -pair ' + pairs.join(',') + ' -tp ' + tpCombined.join(',') + ' -bo ' + boCombined.join(',') + ' -so ' + soCombined.join(',') + ' -mstc ' + mstcCombined.join(',') + ' -sos ' + sosCombined.join(',') + ' -os ' + osCombined.join(',') + ' -ss ' + ssCombined.join(',') + ' -sd ' + sdCombined[0] + ' -ed ' + edCombined[0];
+    }
+</script>
+
+</html>
