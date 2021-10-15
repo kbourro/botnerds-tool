@@ -10,13 +10,9 @@
 
 <body>
     <div><textarea id='input'></textarea></div>
-    <div><button id='generate'>Generate</button></div>
+    <div><button id='generate'>Generate</button><button id='generateCommands'>Generate commands</button></div>
     <div><textarea id='result'></textarea></div>
     <div><label id='count'>0</label></div><br>
-    <div><label>Commands</label></div>
-    <div><textarea id='inputCommands'></textarea></div>
-    <div><button id='generateCommands'>Generate</button></div>
-    <div><textarea id='resultCommands'></textarea></div>
 </body>
 <script>
     document.getElementById('generate').onclick = function () {
@@ -48,7 +44,7 @@
         document.getElementById('count').innerText = results.length;
     }
     document.getElementById('generateCommands').onclick = function () {
-        let input = document.getElementById('inputCommands').value.split(/\r?\n/);
+        let input = document.getElementById('input').value.split(/\r?\n/);
         let pairCombined = [];
         let tpCombined = [];
         let boCombined = [];
@@ -73,7 +69,7 @@
             edCombined.push(element.match(/-ed ([\d\/]+)/)[1]);
         }
         let pairs = [...new Set(pairCombined)];
-        document.getElementById('resultCommands').value = '!dcabacktest -pair ' + pairs.join(',') + ' -tp ' + tpCombined.join(',') + ' -bo ' + boCombined.join(',') + ' -so ' + soCombined.join(',') + ' -mstc ' + mstcCombined.join(',') + ' -sos ' + sosCombined.join(',') + ' -os ' + osCombined.join(',') + ' -ss ' + ssCombined.join(',') + ' -sd ' + sdCombined[0] + ' -ed ' + edCombined[0];
+        document.getElementById('result').value = '!dcabacktest -pair ' + pairs.join(',') + ' -tp ' + tpCombined.join(',') + ' -bo ' + boCombined.join(',') + ' -so ' + soCombined.join(',') + ' -mstc ' + mstcCombined.join(',') + ' -sos ' + sosCombined.join(',') + ' -os ' + osCombined.join(',') + ' -ss ' + ssCombined.join(',') + ' -sd ' + sdCombined[0] + ' -ed ' + edCombined[0];
     }
 </script>
 
