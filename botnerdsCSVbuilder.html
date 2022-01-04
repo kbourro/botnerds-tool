@@ -10,11 +10,37 @@
 
 <body>
     <div><textarea id='input'></textarea></div>
-    <div><button id='generate'>Generate</button><button id='generateCommands'>Generate commands</button></div>
+    <div><button id='generate'>Generate</button><button id='generateCommands'>Generate commands</button><button id='drawdownCov'>Drawdown Cov</button><button id='fundsReq'>Funds Req</button></div>
     <div><textarea id='result'></textarea></div>
     <div><label id='count'>0</label></div><br>
 </body>
 <script>
+	document.getElementById('fundsReq').onclick = function () {
+        let input = document.getElementById('input').value.split(/\r?\n/);
+        let results = [];
+        let test = 0;
+        for (let index = 0; index < input.length; index++) {
+            const element = input[index];
+            if (element == 'Total Funds Req.') {
+                results.push(input[index + 1].replace('%', ''));
+            }
+        }
+        document.getElementById('result').value = results.join('\r\n').trim();
+        document.getElementById('count').innerText = results.length;
+    }
+	document.getElementById('drawdownCov').onclick = function () {
+        let input = document.getElementById('input').value.split(/\r?\n/);
+        let results = [];
+        let test = 0;
+        for (let index = 0; index < input.length; index++) {
+            const element = input[index];
+            if (element == 'Drawdown Cov.') {
+                results.push(input[index + 1].replace('%', ''));
+            }
+        }
+        document.getElementById('result').value = results.join('\r\n').trim();
+        document.getElementById('count').innerText = results.length;
+    }
     document.getElementById('generate').onclick = function () {
         let input = document.getElementById('input').value.split(/\r?\n/);
         let results = [];
@@ -31,7 +57,7 @@
                 results[test].push(input[index + 1].replace('%', ''));
             }
             if (element == 'Max Deal Time') {
-                results[test].push(input[index + 1].replace(/ days.*/, ''));
+                results[test].push(input[index + 1].replace(/ day.*/, ''));
             }
         }
         let finalResults = '';
@@ -68,7 +94,10 @@
             edCombined.push(element.match(/-ed ([\d\/]+)/)[1]);
         }
         let pairs = [...new Set(pairCombined)];
-        document.getElementById('result').value = '!dcabacktest -pair ' + pairs.join(',') + ' -tp ' + tpCombined.join(',') + ' -bo ' + boCombined.join(',') + ' -so ' + soCombined.join(',') + ' -mstc ' + mstcCombined.join(',') + ' -sos ' + sosCombined.join(',') + ' -os ' + osCombined.join(',') + ' -ss ' + ssCombined.join(',') + ' -sd ' + sdCombined[0] + ' -ed ' + edCombined[0];
+		if (pairs.length==0 || (pairs.length==1 && !pairs[0])) {
+			pairs[0] = 'ETH/USDT';
+		}
+        document.getElementById('result').value = '$dcabacktest -pair ' + pairs.join(',') + ' -tp ' + tpCombined.join(',') + ' -bo ' + boCombined.join(',') + ' -so ' + soCombined.join(',') + ' -mstc ' + mstcCombined.join(',') + ' -sos ' + sosCombined.join(',') + ' -os ' + osCombined.join(',') + ' -ss ' + ssCombined.join(',') + ' -sd ' + sdCombined[0] + ' -ed ' + edCombined[0];
     }
 </script>
 
