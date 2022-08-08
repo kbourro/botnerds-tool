@@ -10,7 +10,20 @@
 
 <body>
     <div><textarea id='input'></textarea></div>
-    <div><button id='generate'>Generate</button><button id='generateCommands'>Generate commands</button><button id='drawdownCov'>Drawdown Cov</button><button id='fundsReq'>Funds Req</button></div>
+    <div>
+	<button id='generate'>Generate</button>
+	<button id='generateCommands'>Generate commands</button>
+	<button id='drawdownCov'>Drawdown Cov</button>
+	<button id='fundsReq'>Funds Req</button>
+	<button id='generateJson'>Generate JSON</button>
+	<button id='generateSSUnder1'>Generate SS Under 1</button>
+	<button id='generateSS'>Generate SS</button>
+	<button id='generateOS'>Generate OS</button>
+	<button id='generateOSSS'>Generate OS and SS</button>
+	<button id='generateBOSO'>Generate BO and SO</button>
+	<button id='generateBOSOOSSS'>Generate BO and SO and OS and SS</button>
+	<button id='generateMSTC'>Generate MSTC</button>
+	</div>
     <div><textarea id='result'></textarea></div>
     <div><label id='count'>0</label></div><br>
 </body>
@@ -98,6 +111,309 @@
 			pairs[0] = 'ETH/USDT';
 		}
         document.getElementById('result').value = '$dcabacktest -pair ' + pairs.join(',') + ' -tp ' + tpCombined.join(',') + ' -bo ' + boCombined.join(',') + ' -so ' + soCombined.join(',') + ' -mstc ' + mstcCombined.join(',') + ' -sos ' + sosCombined.join(',') + ' -os ' + osCombined.join(',') + ' -ss ' + ssCombined.join(',') + ' -sd ' + sdCombined[0] + ' -ed ' + edCombined[0];
+    }
+	document.getElementById('generateJson').onclick = function () {
+        let input = document.getElementById('input').value.split(/\r?\n/);
+        let final = [];
+        for (let index = 0; index < input.length; index++) {
+            const element = input[index];
+			let result = '{ name: "Heopas ' + (index+1) + '",';
+            result = result + ' tp: ' + element.match(/-tp ([\d\.]+)/)[1] +',';
+            result = result + ' bo: ' + element.match(/-bo ([\d\.]+)/)[1] +',';
+            result = result + ' so: ' + element.match(/-so ([\d\.]+)/)[1] +',';
+            result = result + ' mstc: ' + element.match(/-mstc ([\d\.]+)/)[1] +',';
+            result = result + ' sos: ' + element.match(/-sos ([\d\.]+)/)[1] +',';
+            result = result + ' os: ' + element.match(/-os ([\d\.]+)/)[1] +',';
+            result = result + ' ss: ' + element.match(/-ss ([\d\.]+)/)[1];
+			result = result + ' }';
+			final.push(result);
+        }
+        document.getElementById('result').value = final.join(',\r\n');
+    }
+	function roundToTwo(num) {
+		return +(Math.round(num + "e+2")  + "e-2");
+	}
+	function generateSS(input) {
+		let localInput = [...input];
+		let finala = [];
+		for(let i = 0; i < localInput.length; i++) {
+			const setup = localInput[i];
+			const bo = Array.isArray(setup.bo) ? setup.bo[0] : setup.bo;
+			const so = setup.so;
+			const mstc = Array.isArray(setup.mstc) ? setup.mstc : [setup.mstc];
+			const sos = Array.isArray(setup.sos) ? setup.sos : [setup.sos];
+			for(let mstcIndex = 0; mstcIndex < mstc.length; mstcIndex++) {
+				let mstcIn = mstc[mstcIndex];
+				for(let sosIndex = 0; sosIndex < sos.length; sosIndex++) {
+					let ss = 1;
+					let sosIn = sos[sosIndex];
+					let final = [];
+					let found1=false;
+					let found2=false;
+					let found3=false;
+					let found4=false;
+					let found5=false;
+					let found6=false;
+					let found7=false;
+					let found8=false;
+					let found9=false;
+					let found10=false;
+					let found11=false;
+					let found12=false;
+					let found13=false;
+					while(!found7) {
+						let change = sosIn;
+						for (let y = 1; y < mstcIn; y++) {
+							change = change * ss + sosIn;
+						}
+						if(change>=30 && !found7) {
+							final.push(ss);
+							found7=true;
+						}
+						else if(change>=25 && !found6) {
+							final.push(ss);
+							found6=true;
+						}
+						else if(change>=24 && !found5) {
+							final.push(ss);
+							found5=true;
+						}
+						else if(change>=23 && !found4) {
+							final.push(ss);
+							found4=true;
+						}
+						else if(change>=22 && !found3) {
+							final.push(ss);
+							found3=true;
+						}
+						else if(change>=21 && !found2) {
+							final.push(ss);
+							found2=true;
+						}
+						else if(change>=20 && !found1) {
+							final.push(ss);
+							found1=true;
+						}
+						ss = roundToTwo(ss + 0.01);
+					}
+					if(final.length>0) {
+						finala.push({...setup, mstc: mstcIn, sos: sosIn, ss: final.length===1 ? final[0] : final });
+					}
+				}
+			}
+		}
+		return finala;
+	}
+	function generateSSUnder1(input) {
+		let localInput = [...input];
+		let finala = [];
+		for(let i = 0; i < localInput.length; i++) {
+			const setup = localInput[i];
+			const bo = Array.isArray(setup.bo) ? setup.bo[0] : setup.bo;
+			const so = setup.so;
+			const mstc = Array.isArray(setup.mstc) ? setup.mstc : [setup.mstc];
+			const sos = Array.isArray(setup.sos) ? setup.sos : [setup.sos];
+			for(let mstcIndex = 0; mstcIndex < mstc.length; mstcIndex++) {
+				let mstcIn = mstc[mstcIndex];
+				for(let sosIndex = 0; sosIndex < sos.length; sosIndex++) {
+					let ss = 0.85;
+					let sosIn = sos[sosIndex];
+					let final = [];
+					let found1=false;
+					let found2=false;
+					let found3=false;
+					let found4=false;
+					let found5=false;
+					let found6=false;
+					let found7=false;
+					let found8=false;
+					let found9=false;
+					let found10=false;
+					let found11=false;
+					let found12=false;
+					let found13=false;
+					while(!found13) {
+						let change = sosIn;
+						for (let y = 1; y < mstcIn; y++) {
+							change = change * ss + sosIn;
+						}
+						if(ss>=1) {
+							found13=true;
+						}
+						else if(change>=60 && !found13) {
+							final.push(ss);
+							found13=true;
+						}
+						else if(change>=55 && !found12) {
+							final.push(ss);
+							found12=true;
+						}
+						else if(change>=50 && !found11) {
+							final.push(ss);
+							found11=true;
+						}
+						else if(change>=45 && !found10) {
+							final.push(ss);
+							found10=true;
+						}
+						else if(change>=40 && !found9) {
+							final.push(ss);
+							found9=true;
+						}
+						else if(change>=35 && !found8) {
+							final.push(ss);
+							found8=true;
+						}
+						else if(change>=30 && !found7) {
+							final.push(ss);
+							found7=true;
+						}
+						else if(change>=25 && !found6) {
+							final.push(ss);
+							found6=true;
+						}
+						else if(change>=24 && !found5) {
+							final.push(ss);
+							found5=true;
+						}
+						else if(change>=23 && !found4) {
+							final.push(ss);
+							found4=true;
+						}
+						else if(change>=22 && !found3) {
+							final.push(ss);
+							found3=true;
+						}
+						else if(change>=21 && !found2) {
+							final.push(ss);
+							found2=true;
+						}
+						else if(change>=20 && !found1) {
+							final.push(ss);
+							found1=true;
+						}
+						ss = roundToTwo(ss + 0.01);
+					}
+					if(final.length>0) {
+						finala.push({...setup, mstc: mstcIn, sos: sosIn, ss: final.length===1 ? final[0] : final });
+					}
+				}
+			}
+		}
+		return finala;
+	}
+	function generateOS(input) {
+		let localInput = [...input];
+		for(let i = 0; i < localInput.length; i++) {
+			const setup = localInput[i];
+			const bo = Array.isArray(setup.bo) ? setup.bo[0] : setup.bo;
+			const so = setup.so;
+			const mstc = setup.mstc;
+			let os = 1.00;
+			let final = [];
+			while(true) {
+				let volume = parseInt(so);
+				let totalVolume = [bo, so];
+				for (let index = 1; index < mstc; index++) {
+					volume *= os;
+					totalVolume.push(volume);
+				}
+				volume = totalVolume.reduce((a, b) => a + b, 0);
+				if(volume >= 600 && volume <= 12000){
+					final.push(os);
+				}
+				else if(volume > 12000) {
+					break;
+				}
+				os = roundToTwo(os + 0.01);
+			}
+			if(final.length>12) {
+				let tempFinal = [...final];
+				final = [];
+				let delta = Math.floor( tempFinal.length / 12 );
+				for(let index=0;index<tempFinal.length;index=index+delta) {
+					if(index < tempFinal.length) {
+						final.push(tempFinal[index]);
+					}
+				}
+			}
+			localInput[i].os = final;
+		}
+		return localInput;
+	}
+	function generateBOSO(input) {
+		let localInput = [...input];
+		let final = [];
+		for(let i = 0; i < localInput.length; i++) {
+			const setup = localInput[i];
+			setup.bo = 10;
+			setup.so = 10;
+			final.push({ ...setup });
+			setup.bo = 20;
+			setup.so = 10;
+			final.push({ ...setup });
+			setup.bo = 30;
+			setup.so = 10;
+			final.push({ ...setup });
+			setup.bo = 10;
+			setup.so = 15;
+			final.push({ ...setup });
+			setup.bo = 10;
+			setup.so = 18;
+			final.push({ ...setup });
+			setup.bo = 10;
+			setup.so = 20;
+			final.push({ ...setup });
+			setup.bo = 10;
+			setup.so = 25;
+			final.push({ ...setup });
+			setup.bo = 10;
+			setup.so = 30;
+			final.push({ ...setup });
+		}
+		return final;
+	}
+	document.getElementById('generateSSUnder1').onclick = function () {
+		document.getElementById('result').value = '';
+		let input = eval(document.getElementById('input').value.replaceAll('\n',''));
+		document.getElementById('result').value = JSON.stringify(generateSSUnder1(input));
+    }
+	document.getElementById('generateSS').onclick = function () {
+		document.getElementById('result').value = '';
+		let input = eval(document.getElementById('input').value.replaceAll('\n',''));
+		document.getElementById('result').value = JSON.stringify(generateSS(input));
+    }
+	document.getElementById('generateOS').onclick = function () {
+		document.getElementById('result').value = '';
+        let input = eval(document.getElementById('input').value.replaceAll('\n',''));
+		document.getElementById('result').value = JSON.stringify(generateOS(input));
+    }
+	document.getElementById('generateBOSO').onclick = function () {
+		document.getElementById('result').value = '';
+        let input = eval(document.getElementById('input').value.replaceAll('\n',''));
+		document.getElementById('result').value = JSON.stringify(generateBOSO(input));
+    }
+	document.getElementById('generateOSSS').onclick = function () {
+		document.getElementById('result').value = '';
+        let input = eval(document.getElementById('input').value.replaceAll('\n',''));
+		document.getElementById('result').value = JSON.stringify(generateOS(generateSS(input)));
+    }
+	document.getElementById('generateBOSOOSSS').onclick = function () {
+		document.getElementById('result').value = '';
+        let input = eval(document.getElementById('input').value.replaceAll('\n',''));
+		document.getElementById('result').value = JSON.stringify(generateOS(generateSS(generateBOSO(input))));
+    }
+	document.getElementById('generateMSTC').onclick = function () {
+		document.getElementById('result').value = '';
+        let input = eval(document.getElementById('input').value.replaceAll('\n',''));
+		let finala = [];
+		for(let i = 0; i < input.length; i++) {
+			const setup = input[i];
+			for(let index = 0; index < setup.mstc.length; index++) {
+				finala.push({ ...setup, mstc: setup.mstc[index] });
+			}
+		}
+		document.getElementById('result').value = JSON.stringify(finala);
     }
 </script>
 
